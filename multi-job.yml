@@ -1,0 +1,34 @@
+﻿- name: gc-job
+  count: 1
+  scheduler: batch
+  periodic:
+    cron: '* 30 * * * *'
+    timezone: 'UTC'
+
+  reshedule:
+    attempts: 5
+    delay: 30s
+
+  components:
+    - type: fiber.utils.examples.garbagecollect
+      name: perform-gc
+
+  entrypoints:
+    - name: perform-gc
+      delay: 10m
+
+- name: alloc-status-job
+  count: 1
+  scheduler: batch
+  periodic:
+    cron: '0/5 * * * * *'
+    timezone: UTC
+  components:
+    - type: fiber.utils.examples.allocationdisplayer
+      name: alloc-status-1
+      config:
+        display_name: 'Alloc Status Displayer'
+
+  entrypoints:
+    - name: alloc-status-1
+      delay: 1s
